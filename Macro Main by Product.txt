@@ -1,0 +1,535 @@
+Public Const ContractCode = "AZZZ"
+
+Public Const TemplateFile = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Product Evaluation Template Auto.xlsx"
+Public Const IncludeFile = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IncludeListDC2.xlsx"
+
+Private Const GWPRaw = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Raw Files DC " & ContractCode & "\GWP " & ContractCode & ".xlsx"
+Private Const OSRaw = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Raw Files DC " & ContractCode & "\OS " & ContractCode & ".xlsx"
+Private Const PaidRaw = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Raw Files DC " & ContractCode & "\Paid " & ContractCode & ".xlsx"
+Private Const UPRRaw = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Raw Files DC " & ContractCode & "\UPR " & ContractCode & ".xlsx"
+
+Private Const IBNRYmin0 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\2024Q4 = IBNR acc v.3 3rd cut.xlsx"
+Private Const IBNRYmin1 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\2023Q4 = IBNR acc v.2.xlsx"
+Private Const IBNRYmin2 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\2022Q4 = IBNR acc v.2.xlsx"
+Private Const IBNRYmin3 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\2021Q4 = IBNR acc v.1.xlsx"
+
+Private Const PDRmin0 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\PDR 202412 v.2.01 2nd cut.xlsx"
+Private Const PDRmin1 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\PDR 202312 v.2.01.xlsx"
+Private Const PDRmin2 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\PDR 202212 v.2.01.xlsx"
+Private Const PDRmin3 = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\IBNR PDR\PDR 202112 v.2.00.xlsx"
+
+Private Const INR = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\INR Manual\Written Commission 2022-2024 update.xlsx"
+
+Private Const FolderLoc = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Macro Result DC " & ContractCode & "\"
+
+Private Const HideContract = True
+
+
+Sub ProductEval()
+    
+    Dim lastCol As Integer
+    
+    Dim lastCol2 As Integer
+    
+    Dim lastrow1 As Integer
+    Dim lastcol1 As Integer
+    
+    Dim valTemp As Double
+    
+    Dim pdm0s As Double
+    Dim pdm0l As Double
+    Dim pdm1s As Double
+    Dim pdm1l As Double
+    Dim pdm2 As Double
+    Dim pdm3 As Double
+    
+    Dim inrm0 As Double
+    Dim inrm1 As Double
+    Dim inrm2 As Double
+    
+    Dim wbGWP As Workbook
+    Dim wsGWP As Worksheet
+    Dim wbOS As Workbook
+    Dim wsOS As Worksheet
+    Dim wbPaid As Workbook
+    Dim wsPaid As Worksheet
+    Dim wbUPR As Workbook
+    Dim wsUPR As Worksheet
+    
+    Dim wbIBm0 As Workbook
+    Dim wsIBm0 As Worksheet
+    Dim wbIBm1 As Workbook
+    Dim wsIBm1 As Worksheet
+    Dim wbIBm2 As Workbook
+    Dim wsIBm2 As Worksheet
+    Dim wbIBm3 As Workbook
+    Dim wsIBm3 As Worksheet
+    
+    Dim wbPDm0 As Workbook
+    Dim wsPDm0 As Worksheet
+    Dim wbPDm1 As Workbook
+    Dim wsPDm1 As Worksheet
+    Dim wbPDm2 As Workbook
+    Dim wsPDm2 As Worksheet
+    Dim wbPDm3 As Workbook
+    Dim wsPDm3 As Worksheet
+    
+    Dim wbINR As Workbook
+    Dim wsINR As Worksheet
+    
+    Dim wbProd As Workbook
+    Dim wsProd As Worksheet
+    Dim wsList As Worksheet
+    
+    Dim PrIndex As Integer
+    Dim prodNum As String
+    Dim DCBI As String
+    Dim LoBName As String
+    Dim ProdDesc As String
+    
+    Dim wbTemp As Workbook
+    Dim wsTemp As Worksheet
+    Dim lastrowTemp As Integer
+    
+    Dim wb As Workbook
+    Dim wsUW As Worksheet
+    Dim wsAS As Worksheet
+    Dim wsAss As Worksheet
+    Dim wsNo As Worksheet
+    
+    Dim cellArr As Variant
+    Dim OldForm As String
+    Dim NewForm As String
+    Dim filePath As String
+    
+    Dim simArr As Variant
+    
+    simArr = Array(12)
+    
+    cellArray = Array("E11", "F11", "G11", "E12", "F12", "G12", "E15", "F15", "G15", "E16", "F16", "G16", "E17", "F17", "G17", "E18", "F18", "G18", "E22", "F22", "G22", "E23", "F23", "G23", "E26", "F26", "G26", "E27", "F27", "G27", "E31", "F31", "G31", "E32", "F32", "G32", "E35", "F35", "G35", "E36", "F36", "G36", "E37", "F37", "G37", "E38", "F38", "G38")
+    
+    Set wbGWP = Workbooks.Open(GWPRaw, UpdateLinks:=0)
+    Set wsGWP = wbGWP.Sheets(1)
+    Set wbOS = Workbooks.Open(OSRaw, UpdateLinks:=0)
+    Set wsOS = wbOS.Sheets(1)
+    Set wbPaid = Workbooks.Open(PaidRaw, UpdateLinks:=0)
+    Set wsPaid = wbPaid.Sheets(1)
+    Set wbUPR = Workbooks.Open(UPRRaw, UpdateLinks:=0)
+    Set wsUPR = wbUPR.Sheets(1)
+    
+    Set wbIBm0 = Workbooks.Open(IBNRYmin0, UpdateLinks:=0)
+    Set wsIBm0 = wbIBm0.Sheets(1)
+    Set wbIBm1 = Workbooks.Open(IBNRYmin1, UpdateLinks:=0)
+    Set wsIBm1 = wbIBm1.Sheets(1)
+    Set wbIBm2 = Workbooks.Open(IBNRYmin2, UpdateLinks:=0)
+    Set wsIBm2 = wbIBm2.Sheets(1)
+    Set wbIBm3 = Workbooks.Open(IBNRYmin3, UpdateLinks:=0)
+    Set wsIBm3 = wbIBm3.Sheets(1)
+    
+    Set wbPDm0 = Workbooks.Open(PDRmin0, UpdateLinks:=0)
+    Set wsPDm0 = wbPDm0.Sheets("PDR Net")
+    Set wbPDm1 = Workbooks.Open(PDRmin1, UpdateLinks:=0)
+    Set wsPDm1 = wbPDm1.Sheets("PDR Net")
+    Set wbPDm2 = Workbooks.Open(PDRmin2, UpdateLinks:=0)
+    Set wsPDm2 = wbPDm2.Sheets("PDR Net")
+    Set wbPDm3 = Workbooks.Open(PDRmin3, UpdateLinks:=0)
+    Set wsPDm3 = wbPDm3.Sheets("PDR Net")
+    
+    Set wbINR = Workbooks.Open(INR, UpdateLinks:=0)
+    Set wsINR = wbINR.Sheets(1)
+
+    Set wbProd = Workbooks.Open(IncludeFile, UpdateLinks:=0)
+    Set wsProd = wbProd.Sheets("Unique")
+    PrIndex = wsProd.Cells(Rows.Count, "A").End(xlUp).Row
+    
+    Set wsList = wbProd.Sheets("List")
+    
+    lastrow1 = wsList.Cells(Rows.Count, "A").End(xlUp).Row
+    lastcol1 = wsList.Cells(1, wsList.Columns.Count).End(xlToLeft).Column
+    
+    Set wbTemp = Workbooks.Add
+    Set wsTemp = wbTemp.Sheets(1)
+
+    For i = 1 To PrIndex 'Product Level'
+    'For i = 15 To PrIndex 'Product Level'
+    'For Each i In simArr 'Product Level'
+        
+        Set wb = Workbooks.Open(TemplateFile, UpdateLinks:=0)
+        
+        'Set wsAS = wb.Sheets("Assumptions Validation")
+        
+        prodNum = wsProd.Cells(i, 1).Value
+        Set wsList = wbProd.Sheets("List")
+        wsList.Range(wsList.Cells(1, 1), wsList.Cells(lastrow1, lastcol1)).AutoFilter
+        wsList.Range(wsList.Cells(1, 1), wsList.Cells(lastrow1, lastcol1)).AutoFilter Field:=1, Criteria1:=prodNum
+        Set wsTemp = wbTemp.Sheets(1)
+        wsTemp.Cells.Clear
+        wsList.Range(wsList.Cells(1, 1), wsList.Cells(lastrow1, lastcol1)).SpecialCells(xlCellTypeVisible).Copy
+        
+        wsTemp.Range("A1").PasteSpecial xlPasteValues
+        
+        lastrowTemp = wsTemp.Cells(Rows.Count, "A").End(xlUp).Row
+        
+        
+'        wsAS.Cells(3, 2).Value = wsTemp.Cells(2, 13).Value
+'        wsAS.Cells(5, 2).Value = wsTemp.Cells(2, 14).Value
+'        wsAS.Cells(6, 2).Value = wsTemp.Cells(2, 15).Value
+'        wsAS.Cells(7, 2).Value = wsTemp.Cells(2, 16).Value
+        
+        For j = 2 To lastrowTemp 'Contract Level'
+            'ProdDesc = wsTemp.Cells(j, 2).Value
+            Set wsUW = wb.Sheets("UW Result Combined")
+            DCBI = wsTemp.Cells(j, 2).Value
+            'LoBName = wsTemp.Cells(j, 27).Value
+            
+            wsUW.Copy After:=wb.Sheets(wb.Sheets.Count)
+            
+            Set wsUW = wb.Sheets(wb.Sheets.Count)
+            
+            If DCBI = "N/A" Then
+                wsUW.Name = "UW Result N_A"
+            Else
+                wsUW.Name = "UW Result " & DCBI
+            End If
+            
+            'wsUW.Cells(4, 1).Value = LoBName
+            wsUW.Cells(5, 1).Value = DCBI
+            
+            'GWP File
+                'Premium
+            lastCol = wsGWP.Cells(1, wsGWP.Columns.Count).End(xlToLeft).Column
+            wsGWP.Cells(1, lastCol + 1).Formula = "=SUMIFS(C:C,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 5).Value & " )"
+            wsGWP.Cells(1, lastCol + 2).Formula = "=SUMIFS(C:C,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 6).Value & " )"
+            wsGWP.Cells(1, lastCol + 3).Formula = "=SUMIFS(C:C,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 7).Value & " )"
+            
+            wsGWP.Cells(2, lastCol + 1).Formula = "=SUMIFS(E:E,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 5).Value & " )"
+            wsGWP.Cells(2, lastCol + 2).Formula = "=SUMIFS(E:E,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 6).Value & " )"
+            wsGWP.Cells(2, lastCol + 3).Formula = "=SUMIFS(E:E,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 7).Value & " )"
+            
+            wsGWP.Range(wsGWP.Cells(1, lastCol + 1), wsGWP.Cells(2, lastCol + 3)).Copy
+            wsUW.Range("E11").PasteSpecial xlPasteValues
+            wsGWP.Range(wsGWP.Cells(1, lastCol + 1), wsGWP.Cells(2, lastCol + 3)).Clear
+            
+                'Commission
+            
+            wsGWP.Cells(3, lastCol + 1).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 5).Value & " )"
+            wsGWP.Cells(3, lastCol + 2).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 6).Value & " )"
+            wsGWP.Cells(3, lastCol + 3).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 7).Value & " )"
+            
+            wsGWP.Cells(4, lastCol + 1).Formula = "=SUMIFS(H:H,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 5).Value & " )"
+            wsGWP.Cells(4, lastCol + 2).Formula = "=SUMIFS(H:H,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 6).Value & " )"
+            wsGWP.Cells(4, lastCol + 3).Formula = "=SUMIFS(H:H,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 7).Value & " )"
+            
+
+            wsGWP.Range(wsGWP.Cells(3, lastCol + 1), wsGWP.Cells(4, lastCol + 3)).Copy
+            wsUW.Range("E22").PasteSpecial xlPasteValues
+            wsGWP.Range(wsGWP.Cells(3, lastCol + 1), wsGWP.Cells(4, lastCol + 3)).Clear
+
+            
+            'UPR Files
+                'UPR (LT N)
+            lastCol = wsUPR.Cells(1, wsUPR.Columns.Count).End(xlToLeft).Column
+            wsUPR.Cells(1, lastCol + 1).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value - 1) & "12""" & ", C:C, ""N"")"
+            wsUPR.Cells(1, lastCol + 2).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value) & "12""" & ", C:C, ""N"")"
+            wsUPR.Cells(1, lastCol + 3).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 6).Value) & "12""" & ", C:C, ""N"")"
+            wsUPR.Cells(1, lastCol + 4).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 7).Value) & "12""" & ", C:C, ""N"")"
+            
+                'Prem Reserve (LT Y)
+            wsUPR.Cells(2, lastCol + 1).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value - 1) & "12""" & ", C:C, ""Y"")"
+            wsUPR.Cells(2, lastCol + 2).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value) & "12""" & ", C:C, ""Y"")"
+            wsUPR.Cells(2, lastCol + 3).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 6).Value) & "12""" & ", C:C, ""Y"")"
+            wsUPR.Cells(2, lastCol + 4).Formula = "=SUMIFS(F:F,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 7).Value) & "12""" & ", C:C, ""Y"")"
+            
+                'DAC
+            wsUPR.Cells(3, lastCol + 1).Formula = "=SUMIFS(G:G,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value - 1) & "12"")"
+            wsUPR.Cells(3, lastCol + 2).Formula = "=SUMIFS(G:G,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value) & "12"")"
+            wsUPR.Cells(3, lastCol + 3).Formula = "=SUMIFS(G:G,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 6).Value) & "12"")"
+            wsUPR.Cells(3, lastCol + 4).Formula = "=SUMIFS(G:G,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 7).Value) & "12"")"
+            
+            'PDR 2021&2022
+                '2020
+                lastCol2 = wsPDm3.Cells(1, wsPDm3.Columns.Count).End(xlToLeft).Column
+                wsPDm3.Cells(1, lastCol2 + 1).Formula = "=SUMIFS(AA:AA,E:E,""" & DCBI & """,G:G , """ & ContractCode & """)"
+                pdm3 = wsPDm3.Cells(1, lastCol2 + 1).Value
+                wsPDm3.Cells(1, lastCol2 + 1).Clear
+                
+                '2021
+                lastCol2 = wsPDm2.Cells(1, wsPDm2.Columns.Count).End(xlToLeft).Column
+                wsPDm2.Cells(1, lastCol2 + 1).Formula = "=SUMIFS(AA:AA,E:E,""" & DCBI & """,G:G , """ & ContractCode & """)"
+                pdm2 = wsPDm2.Cells(1, lastCol2 + 1).Value
+                wsPDm2.Cells(1, lastCol2 + 1).Clear
+            
+            'PDR 2023&2024
+                '2023
+                lastCol2 = wsPDm1.Cells(1, wsPDm1.Columns.Count).End(xlToLeft).Column
+                wsPDm1.Cells(1, lastCol2 + 1).Formula = "=SUMIFS(AB:AB,E:E,""" & DCBI & """,G:G , """ & ContractCode & """)"
+                wsPDm1.Cells(1, lastCol2 + 2).Formula = "=SUMIFS(AD:AD,E:E,""" & DCBI & """,G:G , """ & ContractCode & """)"
+                pdm1s = wsPDm1.Cells(1, lastCol2 + 1).Value
+                wsPDm1.Cells(1, lastCol2 + 1).Clear
+                pdm1l = wsPDm1.Cells(1, lastCol2 + 2).Value
+                wsPDm1.Cells(1, lastCol2 + 2).Clear
+                
+                '2024
+                lastCol2 = wsPDm0.Cells(1, wsPDm0.Columns.Count).End(xlToLeft).Column
+                wsPDm0.Cells(1, lastCol2 + 1).Formula = "=SUMIFS(AB:AB,E:E,""" & DCBI & """,G:G , """ & ContractCode & """)"
+                wsPDm0.Cells(1, lastCol2 + 2).Formula = "=SUMIFS(AD:AD,E:E,""" & DCBI & """,G:G , """ & ContractCode & """)"
+                pdm0s = wsPDm0.Cells(1, lastCol2 + 1).Value
+                wsPDm0.Cells(1, lastCol2 + 1).Clear
+                pdm0l = wsPDm0.Cells(1, lastCol2 + 2).Value
+                wsPDm0.Cells(1, lastCol2 + 2).Clear
+            
+            'Push Data
+                '4a
+                valTemp = wsUPR.Cells(1, lastCol + 1).Value
+                
+                wsUW.Range("E15").Value = valTemp
+                valTemp = wsUPR.Cells(1, lastCol + 2).Value
+                
+                wsUW.Range("F15").Value = valTemp
+                valTemp = wsUPR.Cells(1, lastCol + 3).Value + pdm1s
+                
+                wsUW.Range("G15").Value = valTemp
+                
+                '4b
+                valTemp = wsUPR.Cells(2, lastCol + 1).Value + pdm3
+                
+                wsUW.Range("E16").Value = valTemp
+                valTemp = wsUPR.Cells(2, lastCol + 2).Value + pdm2
+                
+                wsUW.Range("F16").Value = valTemp
+                valTemp = wsUPR.Cells(2, lastCol + 3).Value + pdm1l
+                
+                wsUW.Range("G16").Value = valTemp
+                
+                '4c
+                valTemp = wsUPR.Cells(1, lastCol + 2).Value
+                
+                wsUW.Range("E17").Value = valTemp
+                valTemp = wsUPR.Cells(1, lastCol + 3).Value + pdm1s
+                
+                wsUW.Range("F17").Value = valTemp
+                valTemp = wsUPR.Cells(1, lastCol + 4).Value + pdm0s
+                
+                wsUW.Range("G17").Value = valTemp
+                
+                '4d
+                valTemp = wsUPR.Cells(2, lastCol + 2).Value + pdm2
+                
+                wsUW.Range("E18").Value = valTemp
+                valTemp = wsUPR.Cells(2, lastCol + 3).Value + pdm1l
+                
+                wsUW.Range("F18").Value = valTemp
+                valTemp = wsUPR.Cells(2, lastCol + 4).Value + pdm0l
+                
+                wsUW.Range("G18").Value = valTemp
+                
+                '7ba
+                valTemp = wsUPR.Cells(3, lastCol + 1).Value
+                
+                wsUW.Range("E26").Value = valTemp
+                valTemp = wsUPR.Cells(3, lastCol + 2).Value
+                
+                wsUW.Range("F26").Value = valTemp
+                valTemp = wsUPR.Cells(3, lastCol + 3).Value
+                
+                wsUW.Range("G26").Value = valTemp
+                
+                '7bb
+                valTemp = wsUPR.Cells(3, lastCol + 2).Value
+                
+                wsUW.Range("E27").Value = valTemp
+                valTemp = wsUPR.Cells(3, lastCol + 3).Value
+                
+                wsUW.Range("F27").Value = valTemp
+                valTemp = wsUPR.Cells(3, lastCol + 4).Value
+                
+                wsUW.Range("G27").Value = valTemp
+                
+                wsUPR.Cells(1, lastCol + 1).Clear
+                wsUPR.Cells(1, lastCol + 2).Clear
+                wsUPR.Cells(1, lastCol + 3).Clear
+                wsUPR.Cells(2, lastCol + 1).Clear
+                wsUPR.Cells(2, lastCol + 2).Clear
+                wsUPR.Cells(2, lastCol + 3).Clear
+                wsUPR.Cells(1, lastCol + 4).Clear
+                wsUPR.Cells(2, lastCol + 4).Clear
+                wsUPR.Cells(3, lastCol + 1).Clear
+                wsUPR.Cells(3, lastCol + 2).Clear
+                wsUPR.Cells(3, lastCol + 3).Clear
+                wsUPR.Cells(3, lastCol + 4).Clear
+                
+            'Paid Files
+            lastCol = wsPaid.Cells(1, wsPaid.Columns.Count).End(xlToLeft).Column
+                'Gross Paid Loss
+            wsPaid.Cells(1, lastCol + 1).Formula = "=SUMIFS(C:C,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 5).Value & " )"
+            wsPaid.Cells(1, lastCol + 2).Formula = "=SUMIFS(C:C,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 6).Value & " )"
+            wsPaid.Cells(1, lastCol + 3).Formula = "=SUMIFS(C:C,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 7).Value & " )"
+            wsPaid.Range(wsPaid.Cells(1, lastCol + 1), wsPaid.Cells(1, lastCol + 3)).Copy
+            wsUW.Range("E31").PasteSpecial xlPasteValues
+            wsPaid.Range(wsPaid.Cells(1, lastCol + 1), wsPaid.Cells(1, lastCol + 3)).Clear
+                
+                'Reins Paid Loss
+            wsPaid.Cells(2, lastCol + 1).Formula = "=SUMIFS(E:E,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 5).Value & " )"
+            wsPaid.Cells(2, lastCol + 2).Formula = "=SUMIFS(E:E,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 6).Value & " )"
+            wsPaid.Cells(2, lastCol + 3).Formula = "=SUMIFS(E:E,A:A,""" & DCBI & """, B:B," & wsUW.Cells(8, 7).Value & " )"
+            wsPaid.Range(wsPaid.Cells(2, lastCol + 1), wsPaid.Cells(2, lastCol + 3)).Copy
+            wsUW.Range("E32").PasteSpecial xlPasteValues
+            wsPaid.Range(wsPaid.Cells(2, lastCol + 1), wsPaid.Cells(2, lastCol + 3)).Clear
+            
+            'OS Files
+            lastCol = wsOS.Cells(1, wsOS.Columns.Count).End(xlToLeft).Column
+            wsOS.Cells(1, lastCol + 1).Formula = "=SUMIFS(D:D,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value - 1) & "12"")"
+            wsOS.Cells(1, lastCol + 2).Formula = "=SUMIFS(D:D,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 5).Value) & "12"")"
+            wsOS.Cells(1, lastCol + 3).Formula = "=SUMIFS(D:D,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 6).Value) & "12"")"
+            wsOS.Cells(1, lastCol + 4).Formula = "=SUMIFS(D:D,A:A,""" & DCBI & """, B:B,""" & CStr(wsUW.Cells(8, 7).Value) & "12"")"
+            
+                '12a
+            valTemp = wsOS.Cells(1, lastCol + 1).Value
+            
+            wsUW.Range("E35").Value = valTemp
+            valTemp = wsOS.Cells(1, lastCol + 2).Value
+            
+            wsUW.Range("F35").Value = valTemp
+            valTemp = wsOS.Cells(1, lastCol + 3).Value
+            
+            wsUW.Range("G35").Value = valTemp
+            
+                '12c
+            valTemp = wsOS.Cells(1, lastCol + 2).Value
+            
+            wsUW.Range("E37").Value = valTemp
+            valTemp = wsOS.Cells(1, lastCol + 3).Value
+            
+            wsUW.Range("F37").Value = valTemp
+            valTemp = wsOS.Cells(1, lastCol + 4).Value
+            
+            wsUW.Range("G37").Value = valTemp
+            
+            wsOS.Cells(1, lastCol + 1).Clear
+            wsOS.Cells(1, lastCol + 2).Clear
+            wsOS.Cells(1, lastCol + 3).Clear
+            wsOS.Cells(1, lastCol + 4).Clear
+            
+            'IBNR Files
+                'min 3 2021
+            lastCol = wsIBm3.Cells(1, wsIBm3.Columns.Count).End(xlToLeft).Column
+            wsIBm3.Cells(1, lastCol + 1).Formula = "=SUMIFS(L:L,E:E,""" & DCBI & """, I:I, """ & ContractCode & """)"
+            valTemp = wsIBm3.Cells(1, lastCol + 1).Value
+            wsUW.Range("E36").Value = valTemp
+            wsIBm3.Cells(1, lastCol + 1).Clear
+            
+                'min 2 2022
+            lastCol = wsIBm2.Cells(1, wsIBm2.Columns.Count).End(xlToLeft).Column
+            wsIBm2.Cells(1, lastCol + 1).Formula = "=SUMIFS(L:L,E:E,""" & DCBI & """, I:I, """ & ContractCode & """)"
+            valTemp = wsIBm2.Cells(1, lastCol + 1).Value
+            wsUW.Range("F36").Value = valTemp
+            valTemp = wsIBm2.Cells(1, lastCol + 1).Value
+            wsUW.Range("E38").Value = valTemp
+            wsIBm2.Cells(1, lastCol + 1).Clear
+            
+                'min 1 2023
+            lastCol = wsIBm1.Cells(1, wsIBm1.Columns.Count).End(xlToLeft).Column
+            wsIBm1.Cells(1, lastCol + 1).Formula = "=SUMIFS(L:L,E:E,""" & DCBI & """, I:I, """ & ContractCode & """)"
+            valTemp = wsIBm1.Cells(1, lastCol + 1).Value
+            wsUW.Range("G36").Value = valTemp
+            valTemp = wsIBm1.Cells(1, lastCol + 1).Value
+            wsUW.Range("F38").Value = valTemp
+            wsIBm1.Cells(1, lastCol + 1).Clear
+            
+                'min 0 2024
+            lastCol = wsIBm0.Cells(1, wsIBm0.Columns.Count).End(xlToLeft).Column
+            wsIBm0.Cells(1, lastCol + 1).Formula = "=SUMIFS(L:L,E:E,""" & DCBI & """, I:I, """ & ContractCode & """)"
+            valTemp = wsIBm0.Cells(1, lastCol + 1).Value
+            wsUW.Range("G38").Value = valTemp
+            wsIBm0.Cells(1, lastCol + 1).Clear
+            
+            
+            
+            'Total Sheet Combined
+            
+            Set wsUW = wb.Sheets("UW Result Combined")
+            'wsUW.Cells(4, 1).Value = LoBName
+            wsUW.Cells(5, 1).Value = prodNum
+            wsUW.Cells(6, 1).Value = ContractCode
+            
+            For Each tcell In cellArray
+                
+                OldForm = wsUW.Range(tcell).Formula
+                If DCBI = "N/A" Then
+                    NewForm = "=" & Mid(OldForm, 2, Len(OldForm)) & "+ 'UW Result N_A" & "'!" & tcell
+                Else
+                    NewForm = "=" & Mid(OldForm, 2, Len(OldForm)) & "+ 'UW Result " & DCBI & "'!" & tcell
+                End If
+                wsUW.Range(tcell).Formula = NewForm
+            
+            Next tcell
+            
+            'Notes Sheet
+'            Set wsAss = wb.Sheets("Assumptions Validation")
+'            Set wsNo = wb.Sheets("Notes")
+'
+'            wsNo.Cells(2, 2).Value = ProdDesc
+'
+'
+'            If wsAss.Range("C3").Value >= wsAss.Range("B3").Value Then
+'                wsNo.Range("B8").Value = "We observed that actual gross commission ratio is higher than the assumption."
+'                wsNo.Range("B25").Value = "We recommend that the Company closely monitor the commission provided for this product to support the profitability of the business."
+'            Else
+'                wsNo.Range("B8").Value = "We observed that actual gross commission ratio is lower than the assumption."
+'                wsNo.Range("B25").Value = "We suggest that the Company continue overseeing the commission structure for this product to sustain its favorable results and ensure ongoing profitability."
+'            End If
+'
+'            If wsUW.Range("H42").Value > 0 Then
+'                wsNo.Range("B11").Value = "Based on our observation of the product's overall performance over the past three years, the net underwriting result has been favorable."
+'                wsNo.Range("B28").Value = "Positive underwriting results have been observed. We suggest to continue monitor this product to ensure long-term sustainability."
+'            ElseIf wsUW.Range("H42").Value = 0 Then
+'                wsNo.Range("B11").Value = "Based on our observation of the product's overall performance over the past three years, the net underwriting result has been zero."
+'                wsNo.Range("B28").Value = "Given the current production status, stakeholders need to review whether to continue selling the product and assess if any improvements are needed in the marketing strategy."
+'            Else
+'                wsNo.Range("B11").Value = "Based on our observation of the product's overall performance over the past three years, the net underwriting result has been negative."
+'                wsNo.Range("B28").Value = "We recommend reviewing its profitability and discussing potential actions with relevant stakeholders."
+'            End If
+            
+        Next j
+        
+        If HideContract Then
+            
+            For j = 2 To lastrowTemp 'Contract Level'
+                DCBI = wsTemp.Cells(j, 2).Value
+                If DCBI = "N/A" Then
+                    Sheets("UW Result N_A").Visible = xlSheetHidden
+                Else
+                    Sheets("UW Result " & DCBI).Visible = xlSheetHidden
+                End If
+            Next j
+            
+        End If
+                
+        filePath = FolderLoc & prodNum & " - UW Results by Distribution Channel (2022 - 2024).xlsx"
+        wb.SaveAs Filename:=filePath, FileFormat:=xlOpenXMLWorkbook
+        wb.Close SaveChanges:=0
+        
+    Next i
+    
+    wbGWP.Close SaveChanges:=0
+    wbPaid.Close SaveChanges:=0
+    wbOS.Close SaveChanges:=0
+    wbUPR.Close SaveChanges:=0
+    wbIBm0.Close SaveChanges:=0
+    wbIBm1.Close SaveChanges:=0
+    wbIBm2.Close SaveChanges:=0
+    wbIBm3.Close SaveChanges:=0
+    wbPDm0.Close SaveChanges:=0
+    wbPDm1.Close SaveChanges:=0
+    wbPDm2.Close SaveChanges:=0
+    wbPDm3.Close SaveChanges:=0
+    wbINR.Close SaveChanges:=0
+    
+    wbProd.Close SaveChanges:=0
+    wbTemp.Close SaveChanges:=0
+    
+    MsgBox "Done"
+    
+End Sub
+
+
