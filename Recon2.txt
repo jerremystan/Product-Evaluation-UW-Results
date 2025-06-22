@@ -1,0 +1,90 @@
+Private Const AddressFile = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Macro Result\"
+Private Const ReconFIle = "C:\Stanley\Tugas IFRS17\Produk Evaluation\Macro\Macro Result\Reconcile by LOB _Product Evaluation 2022 - 2024 v4.xlsx"
+
+Sub Recon()
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    Dim wbInc As Workbook
+    Dim wsInc As Worksheet
+    
+    Dim wbTemp As Workbook
+    Dim wsTemp As Worksheet
+    
+    Dim wbMod As Workbook
+    Dim wsMod As Worksheet
+    
+    Dim lastrow As Integer
+    
+    Dim prodNum As String
+    
+    Dim LoBArr As Variant
+    
+    Dim cellArray As Variant
+    
+    Dim OldForm As String
+    Dim NewForm As String
+    
+    Dim filePath As String
+    
+    Set wbTemp = Workbooks.Add
+    
+    Set wsTemp = wbTemp.Sheets(1)
+    
+    LoBArr = Array("Automobile", "Engineering", "Fire", "Marine", "Liability", "Personal Accident", "Others", "Travel", "TCI", "Health")
+    
+    cellArray = Array("E11", "F11", "G11", "E12", "F12", "G12", "E15", "F15", "G15", "E16", "F16", "G16", "E17", "F17", "G17", "E18", "F18", "G18", "E22", "F22", "G22", "E23", "F23", "G23", "E26", "F26", "G26", "E27", "F27", "G27", "E31", "F31", "G31", "E32", "F32", "G32", "E35", "F35", "G35", "E36", "F36", "G36", "E37", "F37", "G37", "E38", "F38", "G38")
+    
+    Set wbInc = Workbooks.Open(IncludeFile, UpdateLinks:=0)
+    Set wsInc = wbInc.Sheets("Recon")
+    
+    Set wbMod = Workbooks.Open(ReconFIle, UpdateLinks:=0)
+    
+    
+    For Each LoB In LoBArr
+        
+        wsTemp.Cells.Clear
+        wsInc.UsedRange.AutoFilter Field:=2, Criteria1:=LoB
+        wsInc.UsedRange.SpecialCells(xlCellTypeVisible).Copy
+        wsTemp.Range("A1").PasteSpecial xlPasteValues
+        
+        Set wsMod = wbMod.Sheets(LoB)
+        
+        wsMod.Cells(4, 1).Value = LoB
+        wsMod.Cells(5, 1).Value = ""
+        
+        lastrow = wsTemp.Cells(Rows.Count, "A").End(xlUp).Row
+            
+        For Each tcell In cellArray
+            
+            For i = 2 To lastrow
+                
+                If i = 2 Then
+                    wsMod.Range(tcell).ClearContents
+                End If
+                
+                prodNum = wsTemp.Cells(i, 1).Value
+                OldForm = wsMod.Range(tcell).Formula
+                NewForm = "=" & Mid(OldForm, 2, Len(OldForm)) & "+ '" & AddressFile & "[" & prodNum & ". Product Evaluation 2022 - 2024.xlsx]UW Result Combined'!" & tcell
+                wsMod.Range(tcell).Formula = NewForm
+                
+            Next i
+        
+        Next tcell
+    
+    Next LoB
+    
+'    wbMod.Sheets(1).Delete
+'    wbMod.Sheets(1).Delete
+'    wbMod.Sheets(1).Delete
+    
+    filePath = AddressFile & "Reconcile by LoB.xlsx"
+    wbMod.SaveAs Filename:=filePath, FileFormat:=xlOpenXMLWorkbook
+    wbMod.Close SaveChanges:=0
+    wbInc.Close SaveChanges:=0
+    wbTemp.Close SaveChanges:=0
+    
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationAutomatic
+    
+End Sub
+
